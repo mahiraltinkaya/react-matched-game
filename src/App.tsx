@@ -17,11 +17,15 @@ import {
 import { useState } from "react";
 import { ClearOutlined, GithubOutlined, UserOutlined } from "@ant-design/icons";
 import ModalComponent from "./containers/ModalComponent";
+import React, { useTransition } from "react";
+import Confetti from "react-confetti";
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
 
 const App: React.FC = () => {
+  const [isLoading, startTransition] = useTransition();
+  const [cartList, setCartList] = useState<ICard[]>(cards);
   const [nickname, setNickname] = useState<string | null>(
     localStorage.getItem("player") || null
   );
@@ -29,6 +33,12 @@ const App: React.FC = () => {
   const [counter, setCounter] = useState<number>(0);
   const [selected, setSelected] = useState<ICard[]>([]);
   const [matches, setMatches] = useState<number[]>([]);
+
+  React.useEffect(() => {
+    if (!localStorage.getItem("player")) {
+      setOpen(true);
+    }
+  }, []);
 
   const handelSelect = (item: ICard) => {
     if (selected.some((x) => x.id === item.id)) return;
@@ -48,9 +58,12 @@ const App: React.FC = () => {
   };
 
   const resetGame = () => {
-    setCounter(0);
-    setSelected([]);
-    setMatches([]);
+    startTransition(() => {
+      setMatches([]);
+      setSelected([]);
+      setCounter(0);
+      setCartList(cards.sort((a, b) => 0.5 - Math.random()));
+    });
   };
 
   const onClick = () => {
@@ -121,9 +134,11 @@ const App: React.FC = () => {
           }}
         >
           <div style={{ maxWidth: 720, minHeight: 500, padding: 10 }}>
+            {matches.length === 24 && <Confetti />}
+
             <Space size={"small"}>
               <Row gutter={[2, 2]}>
-                {cards.map((item: ICard, index: number) => (
+                {cartList.map((item: ICard, index: number) => (
                   <Col key={index} span={4} xs={6} sm={6} md={4}>
                     <FlipCardItem
                       item={item}
@@ -160,12 +175,17 @@ const App: React.FC = () => {
             </Button>
           </div>
         </Footer>
-        <ModalComponent open={open} setOpen={setOpen} onSubmit={onClick}>
+        <ModalComponent
+          open={open}
+          setOpen={setOpen}
+          onSubmit={onClick}
+          title="Please enter a nicnkame"
+        >
           <>
             <Row>
               <Col span={24}>
                 <Input
-                  placeholder="Nickname Giriniz"
+                  placeholder="Nicknane"
                   value={nickname || ""}
                   onChange={(e) => {
                     setNickname(e.target.value);
@@ -181,3 +201,6 @@ const App: React.FC = () => {
 };
 
 export default App;
+function forceRender() {
+  throw new Error("Function not implemented.");
+}

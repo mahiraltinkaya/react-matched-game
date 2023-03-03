@@ -6,6 +6,7 @@ interface IProps {
   setOpen: (open: boolean) => void;
   onSubmit: () => void;
   children?: React.ReactNode;
+  title: string;
 }
 
 const ModalComponent: React.FC<IProps> = ({
@@ -13,11 +14,12 @@ const ModalComponent: React.FC<IProps> = ({
   setOpen,
   onSubmit,
   children,
+  title,
 }) => {
   return (
     <>
       <Modal
-        title="Player Nicname"
+        title={title}
         open={open}
         onOk={() => {
           onSubmit();
