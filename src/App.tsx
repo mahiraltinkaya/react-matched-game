@@ -39,15 +39,15 @@ const App: React.FC = () => {
   const [selected, setSelected] = useState<ICard[]>([]);
   const [matches, setMatches] = useState<number[]>([]);
 
-  React.useEffect(() => {
-    const topTen = async () => {
-      await axios.get("https://api.apitopya/general/top10").then((res) => {
-        if (res.data) {
-          setList(res.data.top);
-        }
-      });
-    };
+  const topTen = async () => {
+    await axios.get("https://api.apitopya.com/general/top10").then((res) => {
+      if (res.data) {
+        setList(res.data.top);
+      }
+    });
+  };
 
+  React.useEffect(() => {
     if (!localStorage.getItem("player")) {
       setOpen(true);
     }
@@ -58,7 +58,7 @@ const App: React.FC = () => {
   React.useEffect(() => {
     if (matches.length !== 0) {
       startTransition(() => {
-        axios.post("https://api.apitopya/general/game", {
+        axios.post("https://api.apitopya.com/general/game", {
           nx: counter / matches.length,
           nc: counter,
           nm: matches.length / 2,
@@ -66,6 +66,10 @@ const App: React.FC = () => {
           nn: nickname,
         });
       });
+    }
+
+    if (matches.length === 24) {
+      topTen();
     }
   }, [matches]);
 
@@ -94,6 +98,8 @@ const App: React.FC = () => {
       setG(uuidv4());
       setCartList(cards.sort((a, b) => 0.5 - Math.random()));
     });
+
+    topTen();
   };
 
   const onClick = () => {
