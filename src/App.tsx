@@ -1,8 +1,7 @@
 import "./App.css";
 import FlipCardItem from "./containers/FlipItem";
-
 import { cards } from "./assets/variables";
-import { ICard } from "types";
+import { ICard, ITopTen } from "types";
 import {
   Button,
   Col,
@@ -19,11 +18,17 @@ import { ClearOutlined, GithubOutlined, UserOutlined } from "@ant-design/icons";
 import ModalComponent from "./containers/ModalComponent";
 import React, { useTransition } from "react";
 import Confetti from "react-confetti";
+import { v4 as uuidv4 } from "uuid";
+
+import axios from "axios";
+import Top10 from "./containers/TopList";
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
 
 const App: React.FC = () => {
+  const [list, setList] = useState<ITopTen[]>([]);
+  const [g, setG] = useState<string>(uuidv4() || "");
   const [isLoading, startTransition] = useTransition();
   const [cartList, setCartList] = useState<ICard[]>(cards);
   const [nickname, setNickname] = useState<string | null>(
@@ -35,10 +40,34 @@ const App: React.FC = () => {
   const [matches, setMatches] = useState<number[]>([]);
 
   React.useEffect(() => {
+    const topTen = async () => {
+      await axios.get("http://localhost:5051/general/top10").then((res) => {
+        if (res.data) {
+          setList(res.data.top);
+        }
+      });
+    };
+
     if (!localStorage.getItem("player")) {
       setOpen(true);
     }
+
+    topTen();
   }, []);
+
+  React.useEffect(() => {
+    if (matches.length !== 0) {
+      startTransition(() => {
+        axios.post("http://localhost:5051/general/game", {
+          nx: counter / matches.length,
+          nc: counter,
+          nm: matches.length / 2,
+          gid: g,
+          nn: nickname,
+        });
+      });
+    }
+  }, [matches]);
 
   const handelSelect = (item: ICard) => {
     if (selected.some((x) => x.id === item.id)) return;
@@ -62,6 +91,7 @@ const App: React.FC = () => {
       setMatches([]);
       setSelected([]);
       setCounter(0);
+      setG(uuidv4());
       setCartList(cards.sort((a, b) => 0.5 - Math.random()));
     });
   };
@@ -110,7 +140,7 @@ const App: React.FC = () => {
 
             <Popconfirm
               title="Clean Game Score and Events?"
-              description="Are you sure to delete game informations?"
+              description="Start a new game?"
               okText="Yes"
               cancelText="No"
               onConfirm={resetGame}
@@ -125,43 +155,58 @@ const App: React.FC = () => {
         </Header>
         <Content
           style={{
-            padding: 1,
             display: "flex",
-            justifyContent: "center",
-            height: "100% !important",
             flexDirection: "column",
             alignItems: "center",
+            padding: "20px 10px",
           }}
         >
-          <div style={{ maxWidth: 720, minHeight: 500, padding: 10 }}>
+          <Space
+            style={{ maxWidth: 720, overflowX: "hidden", overflowY: "auto" }}
+            wrap
+          >
             {matches.length === 24 && <Confetti />}
-
-            <Space size={"small"}>
-              <Row gutter={[2, 2]}>
-                {cartList.map((item: ICard, index: number) => (
-                  <Col key={index} span={4} xs={6} sm={6} md={4}>
-                    <FlipCardItem
-                      item={item}
-                      selected={selected}
-                      matches={matches}
-                      onClick={(e) => {
-                        handelSelect(e);
-                      }}
-                    ></FlipCardItem>
-                  </Col>
-                ))}
-              </Row>
-            </Space>
-          </div>
-          <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
-            <p>
-              * <UserOutlined /> - Active Player.
-            </p>
-
-            <p>
-              * <ClearOutlined /> - Clean all events and reset game.
-            </p>
-          </div>
+            <Row gutter={[16, 0]}>
+              <Col xs={24}>GID : {g}</Col>
+            </Row>
+            <Row gutter={[8, 0]}>
+              {cartList.map((item: ICard, index: number) => (
+                <Col key={index} span={4} xs={6} sm={6} md={4}>
+                  <FlipCardItem
+                    item={item}
+                    selected={selected}
+                    matches={matches}
+                    onClick={(e) => {
+                      handelSelect(e);
+                    }}
+                  ></FlipCardItem>
+                </Col>
+              ))}
+            </Row>
+            <Row style={{ maxWidth: 720, padding: 10 }}>
+              <Col xl={24} sm={12} style={{ padding: "20px 20px " }}>
+                <Top10 data={list}></Top10>
+              </Col>
+              <Col xl={24} sm={12} style={{ padding: "20px 20px " }}>
+                <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
+                  <p>
+                    * <UserOutlined /> - Active Player.
+                  </p>
+                  <p>
+                    * <ClearOutlined /> - Clean all events and reset game.
+                  </p>
+                  <p>
+                    * <span style={{ color: "red" }}>0</span>/0 - Icon Click
+                    Counter.
+                  </p>
+                  <p>
+                    * 0/<span style={{ color: "red" }}>0</span> - Matching Icons
+                    Count.
+                  </p>
+                </div>
+              </Col>
+            </Row>
+          </Space>
         </Content>
         <Footer style={{ padding: 4 }}>
           <div>
@@ -171,7 +216,7 @@ const App: React.FC = () => {
               target="_blank"
               block
             >
-              <GithubOutlined /> | @mahiraltinkaya
+              <GithubOutlined /> | mahiraltinkaya
             </Button>
           </div>
         </Footer>
@@ -201,6 +246,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-function forceRender() {
-  throw new Error("Function not implemented.");
-}
