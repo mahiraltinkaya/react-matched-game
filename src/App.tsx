@@ -189,11 +189,11 @@ const App: React.FC = () => {
                 </Col>
               ))}
             </Row>
-            <Row style={{ maxWidth: 720, padding: 10 }}>
-              <Col xl={24} sm={12} style={{ padding: "20px 20px " }}>
+            <Row gutter={[16, 16]} style={{ maxWidth: 720 }}>
+              <Col xl={24} sm={24}>
                 <Top10 data={list}></Top10>
               </Col>
-              <Col xl={24} sm={12} style={{ padding: "20px 20px " }}>
+              <Col xl={24} sm={24}>
                 <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
                   <p>
                     * <UserOutlined /> - Active Player.

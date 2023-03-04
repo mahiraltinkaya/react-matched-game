@@ -26,7 +26,9 @@ const columns = [
 ];
 
 const Top10: React.FC<IProps> = ({ data }) => (
-  <Table dataSource={data} columns={columns} rowKey={"id"}></Table>
+  <div style={{ width: "100%" }}>
+    <Table dataSource={data} columns={columns} rowKey={"id"}></Table>
+  </div>
 );
 
 export default Top10;
