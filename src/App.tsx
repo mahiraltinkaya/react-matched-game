@@ -41,7 +41,7 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     const topTen = async () => {
-      await axios.get("http://localhost:5051/general/top10").then((res) => {
+      await axios.get("https://api.apitopya/general/top10").then((res) => {
         if (res.data) {
           setList(res.data.top);
         }
@@ -58,7 +58,7 @@ const App: React.FC = () => {
   React.useEffect(() => {
     if (matches.length !== 0) {
       startTransition(() => {
-        axios.post("http://localhost:5051/general/game", {
+        axios.post("https://api.apitopya/general/game", {
           nx: counter / matches.length,
           nc: counter,
           nm: matches.length / 2,
