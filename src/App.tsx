@@ -187,9 +187,9 @@ const App: React.FC = () => {
               ))}
             </Row>
             <Row gutter={[16, 16]} style={{ maxWidth: 720 }}>
-              <Col xl={24} sm={24}>
+              {/* <Col xl={24} sm={24}>
                 <Top10 data={list}></Top10>
-              </Col>
+              </Col> */}
               <Col xl={24} sm={24}>
                 <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
                   <p>
