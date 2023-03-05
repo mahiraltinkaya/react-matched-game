@@ -39,39 +39,39 @@ const App: React.FC = () => {
   const [selected, setSelected] = useState<ICard[]>([]);
   const [matches, setMatches] = useState<number[]>([]);
 
-  const topTen = async () => {
-    await axios.get("https://api.apitopya.com/general/top10").then((res) => {
-      if (res.data) {
-        setList(res.data.top);
-      }
-    });
-  };
+  // const topTen = async () => {
+  //   await axios.get("https://api.apitopya.com/general/top10").then((res) => {
+  //     if (res.data) {
+  //       setList(res.data.top);
+  //     }
+  //   });
+  // };
 
   React.useEffect(() => {
     if (!localStorage.getItem("player")) {
       setOpen(true);
     }
 
-    topTen();
+    // topTen();
   }, []);
 
-  React.useEffect(() => {
-    if (matches.length !== 0) {
-      startTransition(() => {
-        axios.post("https://api.apitopya.com/general/game", {
-          nx: counter / matches.length,
-          nc: counter,
-          nm: matches.length / 2,
-          gid: g,
-          nn: nickname,
-        });
-      });
-    }
+  // React.useEffect(() => {
+  //   if (matches.length !== 0) {
+  //     startTransition(() => {
+  //       axios.post("https://api.apitopya.com/general/game", {
+  //         nx: counter / matches.length,
+  //         nc: counter,
+  //         nm: matches.length / 2,
+  //         gid: g,
+  //         nn: nickname,
+  //       });
+  //     });
+  //   }
 
-    if (matches.length === 24) {
-      topTen();
-    }
-  }, [matches]);
+  //   if (matches.length === 24) {
+  //     topTen();
+  //   }
+  // }, [matches]);
 
   const handelSelect = (item: ICard) => {
     if (selected.some((x) => x.id === item.id)) return;
@@ -99,7 +99,7 @@ const App: React.FC = () => {
       setCartList(cards.sort((a, b) => 0.5 - Math.random()));
     });
 
-    topTen();
+    // topTen();
   };
 
   const onClick = () => {
@@ -190,9 +190,6 @@ const App: React.FC = () => {
               ))}
             </Row>
             <Row gutter={[16, 16]} style={{ maxWidth: 720 }}>
-              <Col xl={24} sm={24}>
-                <Top10 data={list}></Top10>
-              </Col>
               <Col xl={24} sm={24}>
                 <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
                   <p>
