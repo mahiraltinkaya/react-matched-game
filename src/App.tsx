@@ -162,54 +162,68 @@ const App: React.FC = () => {
         <Content
           style={{
             padding: "20px 10px",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          <Space
-            style={{ maxWidth: 720, overflowX: "hidden", overflowY: "auto" }}
-            wrap
+          <div
+            style={{
+              maxWidth: 720,
+              overflowX: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              paddingTop: 20,
+            }}
           >
-            {matches.length === 24 && <Confetti />}
-            <Row gutter={[16, 0]}>
-              <Col xs={24}>GID : {g}</Col>
-            </Row>
-            <Row gutter={[8, 0]}>
-              {cartList.map((item: ICard, index: number) => (
-                <Col key={index} span={4} xs={6} sm={6} md={4}>
-                  <FlipCardItem
-                    item={item}
-                    selected={selected}
-                    matches={matches}
-                    onClick={(e) => {
-                      handelSelect(e);
-                    }}
-                  ></FlipCardItem>
-                </Col>
-              ))}
-            </Row>
-            <Row gutter={[16, 16]} style={{ maxWidth: 720 }}>
-              {/* <Col xl={24} sm={24}>
+            <Layout>
+              {matches.length === 24 && <Confetti />}
+              <Space wrap size={16}>
+                <Row>
+                  <Col xs={24}>GID : {g}</Col>
+                </Row>
+                <Row>
+                  {cartList.map((item: ICard, index: number) => (
+                    <Col key={index} span={4} xs={6} sm={6} md={4}>
+                      <FlipCardItem
+                        item={item}
+                        selected={selected}
+                        matches={matches}
+                        onClick={(e) => {
+                          handelSelect(e);
+                        }}
+                      ></FlipCardItem>
+                    </Col>
+                  ))}
+                </Row>
+                <Row style={{ maxWidth: 720 }}>
+                  {/* <Col xl={24} sm={24}>
                 <Top10 data={list}></Top10>
               </Col> */}
-              <Col xl={24} sm={24}>
-                <div style={{ textAlign: "left", width: "90%", maxWidth: 720 }}>
-                  <p>
-                    * <UserOutlined /> - Active Player.
-                  </p>
-                  <p>
-                    * <ClearOutlined /> - Clean all events and reset game.
-                  </p>
-                  <p>
-                    * <span style={{ color: "red" }}>0</span>/0 - Icon Click
-                    Counter.
-                  </p>
-                  <p>
-                    * 0/<span style={{ color: "red" }}>0</span> - Matching Icons
-                    Count.
-                  </p>
-                </div>
-              </Col>
-            </Row>
-          </Space>
+                  <Col xl={24} sm={24}>
+                    <div
+                      style={{ textAlign: "left", width: "90%", maxWidth: 720 }}
+                    >
+                      <p>
+                        * <UserOutlined /> - Active Player.
+                      </p>
+                      <p>
+                        * <ClearOutlined /> - Clean all events and reset game.
+                      </p>
+                      <p>
+                        * <span style={{ color: "red" }}>0</span>/0 - Icon Click
+                        Counter.
+                      </p>
+                      <p>
+                        * 0/<span style={{ color: "red" }}>0</span> - Matching
+                        Icons Count.
+                      </p>
+                    </div>
+                  </Col>
+                </Row>
+              </Space>
+            </Layout>
+          </div>
         </Content>
         <Footer style={{ padding: 4 }}>
           <div>
